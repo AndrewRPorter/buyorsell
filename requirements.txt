@@ -1,2 +1,3 @@
 yahoo-historical
 matplotlib
+sklearn

@@ -1,23 +1,35 @@
+from typing import List
+
 from matplotlib import pyplot as plt
 from yahoo_historical import Fetcher
 
-from date_helper import one_month_from_today
+from constants import PLOT_COLORS
+from time_helper import time_from_today
 
 
 def run():
-    data = Fetcher("AAPL", one_month_from_today()).get_historical()
+    stocks = get_stocks()
 
-    closes = data["Close"]
-    opens = data["Open"]
-    dates = data["Date"]
+    data = Fetcher(stocks[0], time_from_today(weeks=3)).get_historical()
 
-    plot(dates, closes, opens)
+    plot(data["Date"], data["Close"], data["Open"], color_index=1)
 
-
-def plot(dates, closes, opens):
-    plt.scatter(dates, closes, c="r")
-    plt.scatter(dates, opens, c="g")
     plt.show()
+
+
+def get_stocks() -> List:
+    with open("companies.txt", "r") as f:
+        data = f.readlines()
+        data = [i.strip() for i in data]
+
+        return data
+
+
+def plot(dates, closes, opens, color_index=None):
+    if color_index:
+        plt.scatter(dates, closes, c=PLOT_COLORS[color_index])
+    else:
+        plt.scatter(dates, closes)
 
 
 if __name__ == "__main__":
